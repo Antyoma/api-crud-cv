@@ -14,7 +14,7 @@ app.listen(PORT, ()=>{
 
 //GET, POST, PUT, DELETE
 app.get('/', (req, res) =>{
-    res.send('Hello from Home')
+    res.send('Bienvenido a mi CRUD creado con NodeJS, Express, MondoDB y deploy en Railway. ' + ' ' + ' Debido a que la api aún no tiene un front, debes usarla mediante los endpoints: ' + ' GET: /products, GET: /product/:id, DELETE: /product/:id y PUT:/product/:id ')
 })
 
 //PUT Actualizar un producto
