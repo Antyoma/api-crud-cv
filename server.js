@@ -1,18 +1,70 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Product = require('./models/productModel');
+require('dotenv').config()
 
 const app = express();
-const URL_CONNECT = 'mongodb+srv://admin23:8vUQnxc9AQYx61s7@apicrud.90cijym.mongodb.net/ApiCrud?retryWrites=true&w=majority'
+const URL_CONNECT = process.env.URL_CONNECT;
+const PORT = process.env.PORT;
 app.use(express.json())
 
-app.listen(3000, ()=>{
+app.listen(PORT, ()=>{
     console.log('Server activo')
 })
 
 //GET, POST, PUT, DELETE
 app.get('/', (req, res) =>{
     res.send('Hello from Home')
+})
+
+//PUT Actualizar un producto
+app.put('/product/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+        const product = await Product.findByIdAndUpdate(id, req.body)
+        if (!product){
+            return res.status(404).json({message: `No se encontró el siguiente ID: ${id} `})
+        }
+        const productUpdated = await Product.findById(id)
+        res.status(200).json(productUpdated)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//DELETE Borrar un producto por ID
+app.delete('/product/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+        const product = await Product.findByIdAndDelete(id)
+        if (!product){
+            return res.status(404).json({message: `No se encontró el siguiente ID: ${id} `})
+        }
+        res.status(200).json(product)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET Recuperar un producto por ID
+app.get('/product/:id', async (req, res) => {
+    try{
+        const {id} = req.params;
+        const product = await Product.findById(id)
+        res.status(200).json(product)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
+//GET Recuperar todos los productos
+app.get('/products', async (req, res) => {
+    try{
+        const product = await Product.find({})
+        res.status(200).json(product)
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
 })
 
 //POST Agregar un producto
